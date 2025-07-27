@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15
+    container_name: cloud_optimization_db
+    environment:
+      POSTGRES_DB: cloud_optimization
+      POSTGRES_USER: cloud_user
+      POSTGRES_PASSWORD: secure_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cloud_user -d cloud_optimization"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Backend API
+  backend:
+    build: 
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: cloud_optimization_api
+    environment:
+      DATABASE_URL: postgresql://cloud_user:secure_password@postgres:5432/cloud_optimization
+      API_HOST: 0.0.0.0
+      API_PORT: 8000
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./app:/app/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Frontend Application
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: cloud_optimization_frontend
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    environment:
+      VITE_API_URL: http://localhost:8000
+    volumes:
+      - ./frontend/src:/app/src
+
+volumes:
+  postgres_data:
