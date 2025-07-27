@@ -160,6 +160,10 @@ npm install
 npm run dev
 ```
 
+![App Screenshot](screenshot.png)
+![App Screenshot](screenshot2.png)
+![App Screenshot](screenshot3.png)
+
 ### 5. **Access the Application**
 
 - **Frontend Dashboard**: [http://localhost:5173](http://localhost:5173)
