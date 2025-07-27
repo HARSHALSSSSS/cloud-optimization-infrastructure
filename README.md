@@ -160,7 +160,7 @@ npm install
 npm run dev
 ```
 
-![App Screenshot](screenshot.png)
+![App Screenshot](screenshot1.png)
 ![App Screenshot](screenshot2.png)
 ![App Screenshot](screenshot3.png)
 
